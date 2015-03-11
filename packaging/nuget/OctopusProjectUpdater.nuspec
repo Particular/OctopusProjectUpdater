@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>OctopusProjectUpdater</id>
+    <version>$version$</version>
+    <title>OctopusProjectUpdater</title>
+    <authors>Particular Software</authors>
+    <owners>Particular Software</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>OctopusProjectUpdater</description>
+    <summary></summary>
+    <tags>OctopusProjectUpdater</tags>
+    <developmentDependency>true</developmentDependency>
+    <minClientVersion>2.8</minClientVersion>
+    <dependencies>
+      <dependency id="Octopus.Client" version="2.6.3.886" />
+    </dependencies>
+    <developmentDependency>false</developmentDependency>
+  </metadata>
+
+  <files>
+    <file src="..\..\src\OctopusProjectUpdater\bin\Release\OctopusProjectUpdater.dll" target="lib\net45" />
+  </files>
+</package>

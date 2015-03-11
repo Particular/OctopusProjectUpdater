@@ -20,7 +20,7 @@ namespace OctopusProjectUpdater
             this.templateRepository = templateRepository;
         }
 
-        public void CreateProject(string projectName, string projectGroup, string octopusProjectName)
+        public string CreateProject(string projectName, string projectGroup, string octopusProjectName)
         {
             var factory = new OctopusClientFactory();
             var client = factory.CreateClient(new OctopusServerEndpoint(OctopusUrl, octopusApiKey));
@@ -35,6 +35,7 @@ namespace OctopusProjectUpdater
             var createdProject = CreateProjectResource(templateRepository.GetTempate(projectGroup, "Project.json"), group.Id, projectName, octopusProjectName, repo);
             UpdateProjectVariables(projectName, repo, createdProject);
             UpdateProcessResource(templateRepository.GetTempate(projectGroup, "DeploymentProcess.json"), projectName, createdProject, repo);
+            return OctopusUrl + createdProject.Links["Web"];
         }
 
         static void UpdateProjectVariables(string projectName, OctopusRepository repo, ProjectResource createdProject)

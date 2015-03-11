@@ -7,6 +7,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctopusProjectUpdater", "Oc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctopusProjectUpdater.Tests", "OctopusProjectUpdater.Tests\OctopusProjectUpdater.Tests.csproj", "{1283C47A-0ECC-461C-8329-CED600AC24EA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9D5BCA85-81AC-4A65-9A9E-9AD326F93228}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C620B8EA-0C17-4A39-BEA8-35C83709895F}"
+	ProjectSection(SolutionItems) = preProject
+		..\packaging\nuget\OctopusProjectUpdater.nuspec = ..\packaging\nuget\OctopusProjectUpdater.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
