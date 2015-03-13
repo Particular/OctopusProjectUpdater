@@ -9,9 +9,9 @@
     public class FacadeTests
     {
         [Test]
-        public void It_can_create_and_update_a_project()
+        public void It_can_create_and_update_a_project_and_project_group()
         {
-            const string octopusApiKey = "API-FMCBZ6EVRADQAEB3GNAFDP5MMRC";
+            var octopusApiKey = Environment.GetEnvironmentVariable("OCTOPUS_API_KEY");
             var facade = new Facade(octopusApiKey, new TeamCityArtifactTemplateRepository());
             facade.CreateProject("Test1", "Testing", "Test1.Octo");
 
@@ -35,6 +35,17 @@
 
                 Assert.IsFalse(project.IncludedLibraryVariableSetIds.Contains("LibraryVariableSets-33"));
                 Assert.IsFalse(proecess.Steps.Any(x => x.Name == "Deploy"));
+
+                repo = new OctopusRepository(client);
+                facade = new Facade(octopusApiKey, new TeamCityArtifactTemplateRepository());
+                facade.UpdateAllProjects("Testing");
+
+                project = repo.Projects.FindByName("Test1.Octo");
+                Assert.IsNotNull(project);
+                proecess = repo.DeploymentProcesses.Get(project.DeploymentProcessId);
+
+                Assert.IsTrue(project.IncludedLibraryVariableSetIds.Contains("LibraryVariableSets-33"));
+                Assert.IsTrue(proecess.Steps.Any(x => x.Name == "Deploy"));
             }
             finally
             {
@@ -63,13 +74,11 @@
   ""Name"": ""%OCTO_PROJECT_NAME%"",
   ""Description"": """",
   ""IsDisabled"": false,
-  ""ProjectGroupId"": ""ProjectGroups-99"",
+  ""ProjectGroupId"": ""ProjectGroups-131"",
   ""LifecycleId"": ""lifecycle-ProjectGroups-99"",
 }";
                 }
-                else
-                {
-                    return @"{
+                return @"{
   ""Steps"": [
     {
       ""Id"": ""674e1a63-42cf-440e-83be-f80f58ef85a1"",
@@ -129,7 +138,6 @@
     }
   ]
 }";
-                }
             }
         }
     }
