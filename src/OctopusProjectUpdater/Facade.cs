@@ -20,6 +20,16 @@ namespace OctopusProjectUpdater
             this.templateRepository = templateRepository;
         }
 
+        public string StartScriptTask(string scriptText, string[] machineIds = null, string[] environmentIds = null, string[] targetRoles = null)
+        {
+            var factory = new OctopusClientFactory();
+            var client = factory.CreateClient(new OctopusServerEndpoint(OctopusUrl, octopusApiKey));
+            var repo = new OctopusRepository(client);
+
+            var task = repo.Tasks.ExecuteAdHocScript(scriptText, machineIds, environmentIds, targetRoles);
+            return task.Links["Web"];
+        }
+
         public string CreateProject(string projectName, string projectGroup, string octopusProjectName)
         {
             var factory = new OctopusClientFactory();
@@ -77,7 +87,7 @@ namespace OctopusProjectUpdater
             }
         }
 
-        public void UpdateProject(string octopusProjectName)
+        public string UpdateProject(string octopusProjectName)
         {
             var factory = new OctopusClientFactory();
             var client = factory.CreateClient(new OctopusServerEndpoint(OctopusUrl, octopusApiKey));
@@ -85,26 +95,27 @@ namespace OctopusProjectUpdater
             var project = repo.Projects.FindByName(octopusProjectName);
             var group = repo.ProjectGroups.Get(project.ProjectGroupId);
 
-            Update(repo, project, group);
+            return Update(repo, project, group);
         }
 
-        void Update(OctopusRepository repo, ProjectResource project, ProjectGroupResource group)
+        string Update(OctopusRepository repo, ProjectResource project, ProjectGroupResource group)
         {
             var variables = repo.VariableSets.Get(project.VariableSetId);
 
             var canonicalProjectName = variables.Variables.First(x => x.Name == "CanonicalProjectName").Value;
 
-            UpdateProjectResource(templateRepository.GetTempate(group.Name, "Project.json"), canonicalProjectName, project, repo);
+            var updatedProject = UpdateProjectResource(templateRepository.GetTempate(group.Name, "Project.json"), canonicalProjectName, project, repo);
             UpdateProcessResource(templateRepository.GetTempate(group.Name, "DeploymentProcess.json"), canonicalProjectName, project, repo);
+            return updatedProject.Links["Web"];
         }
 
-        static void UpdateProjectResource(string projectTemplateJson, string canonicalProjectName, ProjectResource project, OctopusRepository repo)
+        static ProjectResource UpdateProjectResource(string projectTemplateJson, string canonicalProjectName, ProjectResource project, OctopusRepository repo)
         {
             projectTemplateJson = FillPlaceholders(projectTemplateJson, canonicalProjectName, project.Name);
             var newProject = JsonConvert.DeserializeObject<ProjectResource>(projectTemplateJson);
             newProject.Id = project.Id;
             newProject.Links = project.Links;
-            repo.Projects.Modify(newProject);
+            return repo.Projects.Modify(newProject);
         }
 
         static void UpdateProcessResource(string processTemplateJson, string canonicalProjectName, ProjectResource project, OctopusRepository repo)
