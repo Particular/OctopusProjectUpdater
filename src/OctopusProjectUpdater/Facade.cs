@@ -27,7 +27,7 @@ namespace OctopusProjectUpdater
             var repo = new OctopusRepository(client);
 
             var task = repo.Tasks.ExecuteAdHocScript(scriptText, machineIds, environmentIds, targetRoles);
-            return task.Links["Web"];
+            return OctopusUrl + task.Links["Web"];
         }
 
         public string CreateProject(string projectName, string projectGroup, string octopusProjectName)
@@ -106,7 +106,7 @@ namespace OctopusProjectUpdater
 
             var updatedProject = UpdateProjectResource(templateRepository.GetTempate(group.Name, "Project.json"), canonicalProjectName, project, repo);
             UpdateProcessResource(templateRepository.GetTempate(group.Name, "DeploymentProcess.json"), canonicalProjectName, project, repo);
-            return updatedProject.Links["Web"];
+            return OctopusUrl + updatedProject.Links["Web"];
         }
 
         static ProjectResource UpdateProjectResource(string projectTemplateJson, string canonicalProjectName, ProjectResource project, OctopusRepository repo)
