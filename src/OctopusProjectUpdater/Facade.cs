@@ -9,7 +9,7 @@ namespace OctopusProjectUpdater
 
     public class Facade
     {
-        const string OctopusUrl = "http://deploy.particular.net";
+        const string OctopusUrl = "https://deploy.particular.net";
 
         string octopusApiKey;
         readonly ITemplateRepository templateRepository;
